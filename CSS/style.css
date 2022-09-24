@@ -144,6 +144,7 @@ h2 {
 .feature-one:hover {
     transition: ease-in-out;
     transform: scale(1.1);
+    /* background-color: gainsboro; */
 }
 
 /* slides */
@@ -165,7 +166,7 @@ h2 {
     margin: 20px;
 } */
 
-/* Prices */
+/* card */
 #visit {
     padding: 100px;
     text-align: center;
@@ -175,6 +176,11 @@ h2 {
 .visit-column {
     padding: 3% 2%;
 }
+.card{
+    margin: 0 auto;
+}
+
+
 
 
 
