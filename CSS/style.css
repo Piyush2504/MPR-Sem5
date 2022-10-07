@@ -208,3 +208,7 @@ h2 {
         text-align: center;
     }
 }
+.button{
+    text-decoration: none;
+    color: white;
+}
