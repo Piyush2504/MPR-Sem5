@@ -137,9 +137,9 @@ h2 {
     color: #8f8f8f;
 }
 
-.feature-one {
+/* .feature-one {
     /* background-color: lightslategrey; */
-}
+ */
 
 .feature-one:hover {
     transition: ease-in-out;
