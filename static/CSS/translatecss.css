@@ -50,3 +50,14 @@ textarea {
 .fa-microphone:hover{
     transform: scale(1.2);
 }
+.fa-microphone-slash{
+    background-color: white;
+    padding: 2rem;
+    border-radius: 50%;
+    margin: 10px;
+    color: red;
+    /* margin-left: 1rem; */
+}
+.fa-microphone-slash:hover{
+    transform: scale(1.2);
+}
