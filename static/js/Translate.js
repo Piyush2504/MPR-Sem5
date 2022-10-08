@@ -80,7 +80,8 @@ function startRecording() {
 
 		recorder.onComplete = function(recorder, blob) { 
 			console.log("Encoding complete");
-			createDownloadLink(blob,recorder.encoding);
+			transcript(blob)
+			// createDownloadLink(blob,recorder.encoding);
 			// encodingTypeSelect.disabled = false;
 		}
 
@@ -126,7 +127,6 @@ function stopRecording() {
 }
 
 function createDownloadLink(blob,encoding) {
-	console.log("Running DlLink")
 
 	const recordingsList = document.getElementById("recordingsList")
 	
@@ -154,6 +154,22 @@ function createDownloadLink(blob,encoding) {
 	recordingsList.appendChild(li);
 }
 
+function transcript(blob) {
+	const form = document.getElementById("file_input")
+	const inp = document.getElementById("file_i")
+
+	let file = new File([blob], "speech.wav",{type:"audio/vnd.wav", lastModified:new Date().getTime()});
+	let container = new DataTransfer();
+	container.items.add(file);
+	// fileInputElement.files = container.files;
+
+    inp.files=container.files;
+	console.log(inp.files)
+
+    // document.body.appendChild(form);
+
+    form.submit();
+}
 
 
 //helper function
