@@ -57,6 +57,7 @@ textarea {
     margin: 10px;
     color: red;
     /* margin-left: 1rem; */
+    
 }
 .fa-microphone-slash:hover{
     transform: scale(1.2);
