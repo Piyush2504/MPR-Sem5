@@ -126,6 +126,9 @@ function stopRecording() {
 }
 
 function createDownloadLink(blob,encoding) {
+	console.log("Running DlLink")
+
+	const recordingsList = document.getElementById("recordingsList")
 	
 	var url = URL.createObjectURL(blob);
 	var au = document.createElement('audio');
