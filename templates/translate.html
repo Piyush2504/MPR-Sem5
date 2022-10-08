@@ -44,15 +44,17 @@
             <h1>Speak/Type</h1>
             <div class="flex-1 col-lg-6 col-md-12">
            
-            <textarea name="" id="" cols="50" rows="10"></textarea>
+            <textarea name="" id="" cols="50" rows="10">{{ transcript }}</textarea>
             </div>
 
-            <a class="mic" id="action"><i class="fa-solid fa-microphone"></i></a>
-            <a class="mic" id="action1"><i class="fa-solid fa-microphone"></i></a>
+            <div>
+                <a class="mic" id="action"><i class="fa-solid fa-microphone"></i></a>
+                <a class="mic" id="action1"><i class="fa-solid fa-microphone-slash"></i></a>
+            </div>
             <ol id="recordingsList"></ol>
             <form method="post" enctype="multipart/form-data" id="file_input" action="/transcript">
                 <input type="file" name="file" id="file_i"/>
-                <!-- <input type="submit" id="submitButton" value="Transcribe"/> -->
+                <input type="submit" id="submitButton" value="Transcribe"/>
             </form>
 
             <!-- <h1>Translated Text</h1>
@@ -60,10 +62,10 @@
             <textarea name="" id="" cols="50" rows="10"></textarea>
             </div>  -->
             
-            <div id="speechTranscriptContainer">
+            <!-- <div id="speechTranscriptContainer">
                 <h1>Results</h1>
                 <p id="speechText">{{ transcript }}</p>
-            </div>
+            </div> -->
         </div>
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
             integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"

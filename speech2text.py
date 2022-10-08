@@ -27,11 +27,16 @@ model.setScorerAlphaBeta(lm_alpha, lm_beta)
 model.setBeamWidth(beam_width)
 
 
-def read_audio_file(filename):
+def read_audio_file(audio_file):
+    from subprocess import Popen, PIPE
+    p=Popen(["ffmpeg", "-y", "-i", "-", "-ar", "16000", "speech.wav"], stdin=audio_file, stdout=PIPE)
+    filename = "./speech.wav"
+    
     with wave.open(filename, 'rb') as w:
         rate = w.getframerate()
         frames = w.getnframes()
         buffer = w.readframes(frames)
+        print("Rates: ", rate)
     return buffer, rate
 
 
