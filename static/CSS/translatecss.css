@@ -43,18 +43,18 @@ textarea {
 .fa-microphone {
     border-radius: 10%;
     background-color: white;
-    padding: 2rem;
+    /* padding: 2rem; */
     border-radius: 100%;
-    margin: 10px;
+    margin: 2rem;
 }
 .fa-microphone:hover{
     transform: scale(1.2);
 }
 .fa-microphone-slash{
     background-color: white;
-    padding: 2rem;
+    /* padding: 2rem; */
     border-radius: 50%;
-    margin: 10px;
+    margin: 2rem;
     color: red;
     /* margin-left: 1rem; */
     
