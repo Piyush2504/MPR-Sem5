@@ -102,7 +102,7 @@ const countries = {
       exchageIcon = document.querySelector(".exchange"),
       selectTag = document.querySelectorAll("select"),
       icons = document.querySelectorAll(".row i");
-    translateBtn = document.querySelector("button"),
+    translateBtn = document.querySelector(".translate-text"),
 
       selectTag.forEach((tag, id) => {
         for (let country_code in countries) {
