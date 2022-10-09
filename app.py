@@ -5,16 +5,6 @@ from speech2text import real_time_transcription
 app = Flask(__name__)
 
 
-# @app.route('/')
-# def hello_world():  # put application's code here
-#     return 'Hello World!'
-#
-#
-# @app.route('/hello/<name>')
-# def hello_name(name):
-#     return 'Hello %s!' % name
-
-
 @app.route("/", methods=["GET", "POST"])
 def index():
     return render_template('index.html')
@@ -44,6 +34,9 @@ def transcript():
             transcript = real_time_transcription(file)
     return render_template('translate.html', transcript=transcript)
 
+@app.route("/translator", methods=["GET", "POST"])
+def translator():
+    return render_template('translator.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
