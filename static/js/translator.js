@@ -102,7 +102,7 @@ const countries = {
       exchageIcon = document.querySelector(".exchange"),
       selectTag = document.querySelectorAll("select"),
       icons = document.querySelectorAll(".row i");
-    translateBtn = document.querySelector(".translate-text"),
+    translateBtn = document.querySelector("#translate-text"),
 
       selectTag.forEach((tag, id) => {
         for (let country_code in countries) {
@@ -112,14 +112,7 @@ const countries = {
         }
       });
 
-    exchageIcon.addEventListener("click", () => {
-      let tempText = fromText.value,
-        tempLang = selectTag[0].value;
-      fromText.value = toText.value;
-      toText.value = tempText;
-      selectTag[0].value = selectTag[1].value;
-      selectTag[1].value = tempLang;
-    });
+    
 
     fromText.addEventListener("keyup", () => {
       if (!fromText.value) {
