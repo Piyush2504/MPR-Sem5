@@ -127,6 +127,8 @@
     background: #fff;
     border-radius: 7px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.01);
+    display: flex;
+    position: relative;
   }
 
   .wrapper {
@@ -243,16 +245,19 @@
   }
 
   .container button {
-    width: 100%;
+    width: 50%;
     padding: 14px;
     outline: none;
     border: none;
     color: #fff;
     cursor: pointer;
     margin-top: 20px;
-    font-size: 17px;
+    font-size: 2rem;
     border-radius: 5px;
-    background: #5372F0;
+    background: #0a0b5f;
+    position: absolute;
+    top: 98%;
+    right: 23%;
   }
 
   @media (max-width: 660px) {

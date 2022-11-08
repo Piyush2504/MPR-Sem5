@@ -9,11 +9,12 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route("/translate", methods=["GET", "POST"])
+@app.route("/translate", methods=["GET"])
 def translate():
-    return render_template('translate.html')
+    if request.method == "GET":
+        return render_template('translate.html')
 
-@app.route("/transcript", methods=["GET", "POST"])
+@app.route("/translate", methods=["POST"])
 def transcript():
     transcript = ""
     if request.method == "POST":
@@ -31,6 +32,8 @@ def transcript():
 
         if file:
             print("Started Transcribing")
+            file.save("speech.ogg")
+            print(file, type(file) )
             transcript = real_time_transcription(file)
     return render_template('translate.html', transcript=transcript)
 

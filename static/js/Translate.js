@@ -1,178 +1,206 @@
+// set up basic variables for app
 
-//webkitURL is deprecated but nevertheless
-URL = window.URL || window.webkitURL;
+const record = document.getElementById("action");
+const stop = document.getElementById("action1");
+const soundClips = document.querySelector(".sound-clips");
+const canvas = document.querySelector(".visualizer");
+const mainSection = document.querySelector(".main-controls");
 
-var gumStream; 						//stream from getUserMedia()
-var recorder; 						//WebAudioRecorder object
-var input; 							//MediaStreamAudioSourceNode  we'll be recording
-var encodingType; 					//holds selected encoding for resulting audio (file)
-var encodeAfterRecord = true;       // when to encode
+// disable stop button while not recording
 
-// shim for AudioContext when it's not avb. 
-var AudioContext = window.AudioContext || window.webkitAudioContext;
-var audioContext; //new audio context to help us record
+stop.disabled = true;
 
-// var encodingTypeSelect = document.getElementById("encodingTypeSelect");
-var recordButton = document.getElementById("action");
-var stopButton = document.getElementById("action1");
+// visualiser setup - create web audio api context and canvas
 
-//add events to those 2 buttons
-recordButton.addEventListener("click", startRecording);
-stopButton.addEventListener("click", stopRecording);
-
-function startRecording() {
-	console.log("startRecording() called");
-
-	/*
-		Simple constraints object, for more advanced features see
-		https://addpipe.com/blog/audio-constraints-getusermedia/
-	*/
-    
-    var constraints = { audio: true, video:false }
-
-    /*
-    	We're using the standard promise based getUserMedia() 
-    	https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-	*/
-
-	navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
-		console.log("getUserMedia() success, stream created, initializing WebAudioRecorder...");
-
-		/*
-			create an audio context after getUserMedia is called
-			sampleRate might change after getUserMedia is called, like it does on macOS when recording through AirPods
-			the sampleRate defaults to the one set in your OS for your playback device
-
-		*/
-		audioContext = new AudioContext();
-
-		//update the format 
-		// document.getElementById("formats").innerHTML="Format: 2 channel "+encodingTypeSelect.options[encodingTypeSelect.selectedIndex].value+" @ "+audioContext.sampleRate/1000+"kHz"
-
-		//assign to gumStream for later use
-		gumStream = stream;
-		
-		/* use the stream */
-		input = audioContext.createMediaStreamSource(stream);
-		
-		//stop the input from playing back through the speakers
-		//input.connect(audioContext.destination)
-
-		//get the encoding 
-		encodingType = "wav";
-		
-		//disable the encoding selector
-		// encodingTypeSelect.disabled = true;
-
-		recorder = new WebAudioRecorder(input, {
-		  workerDir: "/", // must end with slash
-		  encoding: encodingType,
-		  numChannels:2, //2 is the default, mp3 encoding supports only 2
-		  onEncoderLoading: function(recorder, encoding) {
-		    // show "loading encoder..." display
-		    console.log("Loading "+encoding+" encoder...");
-		  },
-		  onEncoderLoaded: function(recorder, encoding) {
-		    // hide "loading encoder..." display
-		    console.log(encoding+" encoder loaded");
-		  }
-		});
-
-		recorder.onComplete = function(recorder, blob) { 
-			console.log("Encoding complete");
-			transcript(blob)
-			// createDownloadLink(blob,recorder.encoding);
-			// encodingTypeSelect.disabled = false;
-		}
-
-		recorder.setOptions({
-		  timeLimit:120,
-		  encodeAfterRecord:encodeAfterRecord,
-	      ogg: {quality: 0.5},
-	      mp3: {bitRate: 160}
-	    });
-
-		//start the recording process
-		recorder.startRecording();
-
-		 console.log("Recording started");
-
-	}).catch(function(err) {
-	  	//enable the record button if getUSerMedia() fails
-    	recordButton.disabled = false;
-    	stopButton.disabled = true;
-
-	});
-
-	//disable the record button
-    recordButton.disabled = true;
-    stopButton.disabled = false;
-}
-
-function stopRecording() {
-	console.log("stopRecording() called");
-	
-	//stop microphone access
-	gumStream.getAudioTracks()[0].stop();
-	console.log(gumStream.getAudioTracks())
-
-	//disable the stop button
-	stopButton.disabled = true;
-	recordButton.disabled = false;
-	
-	//tell the recorder to finish the recording (stop recording + encode the recorded audio)
-	recorder.finishRecording();
-
-	console.log('Recording stopped');
-}
-
-function createDownloadLink(blob,encoding) {
-
-	const recordingsList = document.getElementById("recordingsList")
-	
-	var url = URL.createObjectURL(blob);
-	var au = document.createElement('audio');
-	var li = document.createElement('li');
-	var link = document.createElement('a');
-
-	//add controls to the <audio> element
-	au.controls = true;
-	au.src = url;
-
-	//link the element to the blob
-	link.href = url;
-	link.download = new Date().toISOString() + '.'+encoding;
-	link.innerHTML = link.download;
-
-	//add the new audio and a elements to the li element
-	li.appendChild(au);
-	li.appendChild(link);
-	console.log(au)
-	console.log(link)
-
-	//add the li element to the ordered list
-	recordingsList.appendChild(li);
-}
+let audioCtx;
+const canvasCtx = canvas.getContext("2d");
 
 function transcript(blob) {
-	const form = document.getElementById("file_input")
-	const inp = document.getElementById("file_i")
+	const form = document.getElementById("file_input");
+	const inp = document.getElementById("file_i");
+	var url = URL.createObjectURL(blob);
+	console.log("URL:", url);
 
-	let file = new File([blob], "speech.wav",{type:"audio/wav", lastModified:new Date().getTime()});
+	let file = new File([blob], "speech.wav", { type: "audio/wav", lastModified: new Date().getTime() });
 	let container = new DataTransfer();
 	container.items.add(file);
 	// fileInputElement.files = container.files;
 
-    inp.files=container.files;
-	console.log(inp.files)
+	inp.files = container.files;
+	console.log(inp.files);
 
-    // document.body.appendChild(form);
+	// document.body.appendChild(form);
 
-    form.submit();
+	// form.submit();
 }
 
+//main block for doing the audio recording
 
-//helper function
-function __log(e, data) {
-	log.innerHTML += "\n" + e + " " + (data || '');
+if (navigator.mediaDevices.getUserMedia) {
+	console.log("getUserMedia supported.");
+
+	const constraints = { audio: true };
+	let chunks = [];
+
+	let onSuccess = function (stream) {
+		const mediaRecorder = new MediaRecorder(stream, { audioBitsPerSecond: 16000 });
+
+		visualize(stream);
+
+		record.onclick = function () {
+			mediaRecorder.start();
+			console.log(mediaRecorder.state);
+			console.log("recorder started");
+			record.style.background = "red";
+
+			stop.disabled = false;
+			record.disabled = true;
+		};
+
+		stop.onclick = function () {
+			mediaRecorder.stop();
+			console.log(mediaRecorder.state);
+			console.log("recorder stopped");
+			record.style.background = "";
+			record.style.color = "";
+			// mediaRecorder.requestData();
+
+			stop.disabled = true;
+			record.disabled = false;
+		};
+
+		mediaRecorder.onstop = function (e) {
+			console.log("data available after MediaRecorder.stop() called.");
+
+			const clipName = "My unnamed clip" || prompt("Enter a name for your sound clip?", "My unnamed clip");
+
+			const clipContainer = document.createElement("article");
+			const clipLabel = document.createElement("p");
+			const audio = document.createElement("audio");
+			const deleteButton = document.createElement("button");
+
+			clipContainer.classList.add("clip");
+			audio.setAttribute("controls", "");
+			deleteButton.textContent = "Delete";
+			deleteButton.className = "delete";
+
+			if (clipName === null) {
+				clipLabel.textContent = "My unnamed clip";
+			} else {
+				clipLabel.textContent = clipName;
+			}
+
+			clipContainer.appendChild(audio);
+			clipContainer.appendChild(clipLabel);
+			clipContainer.appendChild(deleteButton);
+			soundClips.appendChild(clipContainer);
+
+			audio.controls = true;
+			const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
+			transcript(blob);
+			chunks = [];
+			const audioURL = window.URL.createObjectURL(blob);
+			audio.src = audioURL;
+			console.log("recorder stopped");
+
+			deleteButton.onclick = function (e) {
+				e.target.closest(".clip").remove();
+			};
+
+			clipLabel.onclick = function () {
+				const existingName = clipLabel.textContent;
+				const newClipName = prompt("Enter a new name for your sound clip?");
+				if (newClipName === null) {
+					clipLabel.textContent = existingName;
+				} else {
+					clipLabel.textContent = newClipName;
+				}
+			};
+		};
+
+		mediaRecorder.ondataavailable = function (e) {
+			chunks.push(e.data);
+		};
+	};
+
+	let onError = function (err) {
+		console.log("The following error occured: " + err);
+	};
+
+	navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, onError);
+} else {
+	console.log("getUserMedia not supported on your browser!");
+}
+
+function visualize(stream) {
+	if (!audioCtx) {
+		audioCtx = new AudioContext();
+	}
+
+	const source = audioCtx.createMediaStreamSource(stream);
+
+	const analyser = audioCtx.createAnalyser();
+	analyser.fftSize = 2048;
+	const bufferLength = analyser.frequencyBinCount;
+	const dataArray = new Uint8Array(bufferLength);
+
+	source.connect(analyser);
+	//analyser.connect(audioCtx.destination);
+
+	draw();
+
+	function draw() {
+		const WIDTH = canvas.width;
+		const HEIGHT = canvas.height;
+
+		requestAnimationFrame(draw);
+
+		analyser.getByteTimeDomainData(dataArray);
+
+		canvasCtx.fillStyle = "rgb(200, 200, 200)";
+		canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+
+		canvasCtx.lineWidth = 2;
+		canvasCtx.strokeStyle = "rgb(0, 0, 0)";
+
+		canvasCtx.beginPath();
+
+		let sliceWidth = (WIDTH * 1.0) / bufferLength;
+		let x = 0;
+
+		for (let i = 0; i < bufferLength; i++) {
+			let v = dataArray[i] / 128.0;
+			let y = (v * HEIGHT) / 2;
+
+			if (i === 0) {
+				canvasCtx.moveTo(x, y);
+			} else {
+				canvasCtx.lineTo(x, y);
+			}
+
+			x += sliceWidth;
+		}
+
+		canvasCtx.lineTo(canvas.width, canvas.height / 2);
+		canvasCtx.stroke();
+	}
+}
+
+window.onresize = function () {
+	canvas.width = mainSection.offsetWidth;
+};
+
+window.onresize();
+
+const $translate = document.getElementById("btn_translate");
+$translate.addEventListener("click", translate);
+function translate() {
+	txt = document.getElementById("temp").value;
+	localStorage.setItem("text", txt)
+	window.location.href = "/translator";
+	// console.log(txt)
+	// $from_text = document.getElementById("from-text");
+	// $from_text.value = txt;
+	// $translate_text = document.getElementById("translate-text");
+	// $translate_text.click();
 }

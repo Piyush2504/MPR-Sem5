@@ -29,7 +29,10 @@ model.setBeamWidth(beam_width)
 
 def read_audio_file(audio_file):
     from subprocess import Popen, PIPE
-    p=Popen(["ffmpeg", "-y", "-i", "-", "-ar", "16000", "speech.wav"], stdin=audio_file, stdout=PIPE)
+    print()
+    # p=Popen(["ffmpeg", "-y", "-i", "-", "-ar", "16000", "speech.wav"], stdin=audio_file, stdout=PIPE)
+    p=Popen(["ffmpeg", "-y", "-i", "speech.ogg", "-ar", "16000", "speech.wav"])
+    print()
     p.wait()
     filename = "./speech.wav"
     

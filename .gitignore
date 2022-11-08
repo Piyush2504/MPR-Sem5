@@ -1,6 +1,8 @@
 deepspeech-0.9.3-models.pbmm
 deepspeech-0.9.3-models.scorer
 /venv
-./__pycache__
+/__pycache__
 speech.wav
+speech.ogg
 test.py
+__pycache__/speech2text.cpython-39.pyc
