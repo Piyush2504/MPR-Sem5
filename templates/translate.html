@@ -37,24 +37,24 @@
 			</div>
 
 			<section class="main-controls">
-				<canvas class="visualizer" height="60px"></canvas>
+				<canvas class="visualizer"></canvas>
 				<div id="buttons">
 					<a class="mic" id="action"><i class="fa-solid fa-microphone"></i></a>
 					<a class="mic" id="action1"><i class="fa-solid fa-microphone-slash"></i></a>
 				</div>
 			</section>
 
-			<section class="sound-clips"></section>
+			<!-- <section class="sound-clips"></section> -->
 			<!-- <div>
 				<a class="mic" id="action"><i class="fa-solid fa-microphone"></i></a>
 				<a class="mic" id="action1"><i class="fa-solid fa-microphone-slash"></i></a>
 			</div> -->
 			<!-- <ol id="recordingsList"></ol> -->
 			<form method="post" enctype="multipart/form-data" id="file_input" action="/translate">
-				<input type="file" name="file" id="file_i" />
-				<input type="submit" id="submitButton" value="Transcribe" />
+				<input type="file" name="file" class="choose_file" id="file_i" />
+				<input type="submit" id="submitButton" class="submitButton" value="Transcribe" />
 			</form>
-			<button class="btn_translate" id="btn_translate">Translate</button>
+			<button class="btn_translate submitButton" id="btn_translate" >Translate</button>
 			<!-- <form action="/translator">
                 <input type="text" value={{transcript}}>
                 <button type="submit">Translate Text</button>
